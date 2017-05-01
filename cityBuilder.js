@@ -4,19 +4,58 @@ var ctx = canvas.getContext("2d");
 var mouseX, mouseY, mouseClicked;
 var posX,posY;
 
-var gridSize = 1;
+var gridSize = 5;
 
 var blocks = [];
 
-function block(x,y,size){
+var colorNum = 0;
+var color = "black";
+
+function block(x,y,size,color){
 	this.x = x;
 	this.y = y;
 	this.size = size;
+	this.color = color
 
 	this.draw = function(){
+		ctx.fillStyle = this.color;
 		ctx.fillRect(this.x,this.y,this.size,this.size);
 	}
 }
+
+function changeColor(){
+	
+	if(colorNum < 7){
+		colorNum ++;
+	}else{
+		colorNum = 0;
+	}
+
+	if(colorNum === 0){
+		color="black";
+	}else if(colorNum === 1){
+		color="blue";
+	}else if(colorNum === 2){
+		color="green";
+	}else if(colorNum === 3){
+		color="red";
+	}else if(colorNum === 4){
+		color="yellow";
+	}else if(colorNum === 5){
+		color="gray";
+	}else if(colorNum === 6){
+		color="#996600";
+	}else if(colorNum === 7){
+		color="white";
+	}
+
+	ctx.fillStyle = color;
+	console.log(color);
+}
+
+canvas.addEventListener('contextmenu', function(evt) { 
+  evt.preventDefault();
+}, false);
 
 canvas.addEventListener('mousemove', function(evt) {
 	if (evt.offsetX) {
@@ -27,8 +66,12 @@ canvas.addEventListener('mousemove', function(evt) {
 
 canvas.addEventListener('mousedown', function(evt){
 	if(evt.button === 0){
-		blocks.push(new block(posX*gridSize,posY*gridSize,gridSize));
+		//blocks.push(new block(posX*gridSize,posY*gridSize,gridSize));
 		mouseClicked = true;
+	}else if(evt.button === 1){
+		changeColor();
+	}else if(evt.button === 2){
+		blocks.splice(blocks.length-1,1);
 	}
 });
 
@@ -42,7 +85,8 @@ canvas.addEventListener('wheel', function(evt){
 	if(evt.deltaY > 0){
 		gridSize ++;
 	}else{
-		gridSize--;
+		if(gridSize > 1)
+			gridSize--;
 	}
 	console.log(gridSize);
 });
@@ -53,7 +97,7 @@ function update(){
     posY = Math.floor(mouseY/gridSize);
 
 	if(mouseClicked){
-		blocks.push(new block(posX*gridSize,posY*gridSize,gridSize));
+		blocks.push(new block(posX*gridSize,posY*gridSize,gridSize,color));
 	}
 	ctx.fillRect(posX*gridSize,posY*gridSize,gridSize,gridSize);
 	for(var i = 0; i < blocks.length; i++){
@@ -61,4 +105,4 @@ function update(){
 	}
 }
 
-setInterval(update,1000/60);
+setInterval(update,1000/30);
