@@ -48,9 +48,6 @@ function changeColor(){
 	}else if(colorNum === 7){
 		color="white";
 	}
-
-	ctx.fillStyle = color;
-	console.log(color);
 }
 
 canvas.addEventListener('contextmenu', function(evt) { 
@@ -62,11 +59,14 @@ canvas.addEventListener('mousemove', function(evt) {
         mouseX = evt.offsetX;
         mouseY = evt.offsetY;
     }
+    if(mouseClicked){
+		blocks.push(new block(posX*gridSize,posY*gridSize,gridSize,color));
+	}
 });
 
 canvas.addEventListener('mousedown', function(evt){
 	if(evt.button === 0){
-		//blocks.push(new block(posX*gridSize,posY*gridSize,gridSize));
+		blocks.push(new block(posX*gridSize,posY*gridSize,gridSize));
 		mouseClicked = true;
 	}else if(evt.button === 1){
 		changeColor();
@@ -96,13 +96,11 @@ function update(){
 	posX = Math.floor(mouseX/gridSize);
     posY = Math.floor(mouseY/gridSize);
 
-	if(mouseClicked){
-		blocks.push(new block(posX*gridSize,posY*gridSize,gridSize,color));
-	}
-	ctx.fillRect(posX*gridSize,posY*gridSize,gridSize,gridSize);
 	for(var i = 0; i < blocks.length; i++){
 		blocks[i].draw();
 	}
+	ctx.fillStyle = color;
+	ctx.fillRect(posX*gridSize,posY*gridSize,gridSize,gridSize);
 }
 
-setInterval(update,1000/30);
+setInterval(update,1000/60);
